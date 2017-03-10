@@ -78,6 +78,7 @@ global:
   [ opsgenie_api_host: <string> | default = "https://api.opsgenie.com/" ]
   [ hipchat_url: <string> | default = "https://api.hipchat.com/" ]
   [ hipchat_auth_token: <string> ]
+  [ victorops_api_url: <string> | default = "https://alert.victorops.com/integrations/generic/20131114/alert/" ]
 
 # Files from which custom notification template definitions are read.
 # The last component may use a wildcard matcher, e.g. 'templates/*.tmpl'.
@@ -231,6 +232,8 @@ opsgenie_configs:
   [ - <opsgenie_config>, ... ]
 webhook_configs:
   [ - <webhook_config>, ... ]
+victorops_configs:
+  [ - <victorops_config>, ... ]
 ```
 
 
@@ -446,4 +449,29 @@ endpoint:
     ...
   ]
 }
+
+## `<victorops_config>`
+
+VictorOps notifications are sent via the [Alert Ingestion API](http://victorops.force.com/knowledgebase/articles/Integration/Alert-Ingestion-API-Documentation).
+
+```
+# Whether or not to notify about resolved alerts.
+[ send_resolved: <boolean> | default = true ]
+
+# The API key to use when talking to the VictorOps API.
+api_key: <string>
+
+# The URL to send VictorOps API requests to.
+[ api_url: <string> | default = global.victorops_api_url ]
+
+# Routing key for the alert.
+routing_key: <tmpl_string>
+
+# Additional information to go with the alert.
+[ message: <tmpl_string> | default = '{{ template "victorops.default.message" . }}' ]
+# One of CRITICAL, WARNING or INFO.
+[ message_type: <string> | default = 'CRITICAL' ]
+# The name of the monitoring system.
+[ from: <tmpl_string> | default = '{{ template "victorops.default.from" . }}' ]
+
 ```
